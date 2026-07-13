@@ -1,4 +1,4 @@
 interface:
   display_name: "Slideshow Skill"
-  short_description: "Turn curatorial copy and images into polished storybook PDFs"
-  default_prompt: "Use $slideshow-skill to turn my curatorial copy and images into a polished storybook PDF."
+  short_description: "Build guided curatorial storybooks from flexible inputs"
+  default_prompt: "Use $slideshow-skill to turn copy and images I paste, attach, or point to into a guided warm-editorial storybook PDF."

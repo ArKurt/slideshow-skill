@@ -9,8 +9,8 @@ Create a content-led deck from a reusable component system. Treat a reference PD
 
 ## Workflow
 
-1. Inventory the supplied copy, local images, logos, captions, provenance, output requirements, and optional reference PDF. Never fetch restricted or unapproved assets.
-2. If a visual reference is supplied, inspect representative pages and extract a style contract: page ratio, palette, typography roles, spacing, image treatment, recurring components, and density. Do not copy the reference's content framework unless requested.
+1. Accept input in the form most convenient to the user: pasted copy, conversation attachments, named files, individual paths, or folders. Do not require an `inputs/` folder or any fixed directory layout. Inventory the available copy, images, logos, captions, provenance, output requirements, and optional reference PDF. Resolve every image used by the renderer to an accessible local file. Never fetch restricted or unapproved assets.
+2. Choose the visual language. If the user supplies a new visual reference or explicit art direction, inspect it and extract a style contract: page ratio, palette, typography roles, spacing, image treatment, recurring components, and density. Otherwise, use the bundled warm-editorial preset by default without asking the user to provide another reference. Do not copy a reference's content framework unless requested.
 3. Derive the page sequence from the project narrative. Give every page one primary claim, then select the smallest suitable component for it.
 4. Copy `assets/example-brief.json` to the working output directory and replace its sample content. Read `references/brief-schema.md` when creating or validating the brief.
 5. Preserve asset provenance in the `assets` map. Use local paths relative to the brief whenever possible. Record rights uncertainty explicitly.
@@ -28,6 +28,8 @@ Create a content-led deck from a reusable component system. Treat a reference PD
 
 8. Render the PDF to page images or inspect representative screenshots. Perform at least one inspect/fix/re-render cycle. Fix text overflow, font substitution, low-resolution images, awkward crops, inconsistent spacing, and missing credits before delivery.
 9. Deliver the PDF for review together with the structured brief and linked/approved source assets when editability matters. Keep client-private files and raw assets out of Git.
+
+Guide nontechnical users through the workflow in plain language. Summarize what was received, infer safe defaults, and ask only for information whose absence would materially change the result. Do not require the user to understand JSON, HTML, command lines, or folder conventions. At the end, report the generated file paths and suggest the most useful pages or issues to review first.
 
 ## Component selection
 
@@ -55,7 +57,7 @@ Vary the sequence according to the copy. Do not force every component into every
 
 ## Reference-style adaptation
 
-For the bundled warm-editorial preset, use an A4 landscape page, warm paper, dark brown, oxblood, brass accents, serif display type, sans-serif body type, generous whitespace, and restrained rules. This preset was derived from visual characteristics only. It is not a hotel, investment, or architecture-story framework.
+Use the bundled warm-editorial preset whenever the user does not provide a new visual reference or explicit style direction. Use an A4 landscape page, warm paper, dark brown, oxblood, brass accents, serif display type, sans-serif body type, generous whitespace, and restrained rules. This preset was derived from the Huqiu reference's visual characteristics only. It is not a hotel, investment, or architecture-story framework.
 
 When a new reference is supplied, update the brief's `style` values and page choices first. Patch the renderer only when the reference demonstrates a reusable component that the current set cannot express.
 
