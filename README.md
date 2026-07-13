@@ -10,7 +10,7 @@
 
 ### 1. 把仓库地址交给 Codex 安装（推荐）
 
-仓库公开后，客户不需要 GitHub 账号。把仓库地址
+本仓库已经公开，客户不需要 GitHub 账号。把仓库地址
 `https://github.com/ArKurt/slideshow-skill` 发给 Codex，并附上下面这段话：
 
 ```text
