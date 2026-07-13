@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+
+.tmp/
+inputs/
+outputs/
+
+.DS_Store
+Thumbs.db
+*.log

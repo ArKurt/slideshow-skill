@@ -1,0 +1,150 @@
+{
+  "schema_version": "0.1.0",
+  "meta": {
+    "title": "现代生活的两种尺度",
+    "subtitle": "策展故事书示例",
+    "language": "zh-CN",
+    "footer_label": "CURATORIAL STORYBOOK · INTERNAL REVIEW",
+    "status": "internal_review"
+  },
+  "style": {
+    "paper": "#f1ecdf",
+    "ink": "#191714",
+    "muted": "#756f65",
+    "dark": "#181512",
+    "oxblood": "#762b25",
+    "brass": "#b08b57",
+    "serif": "Noto Serif CJK SC",
+    "sans": "Noto Sans CJK SC"
+  },
+  "assets": {
+    "scene-a": {
+      "path": "example-scene-a.svg",
+      "title": "场景 A",
+      "alt": "暖色空间中的椅子与圆形构图",
+      "caption": "示例素材 · 请替换为已审核项目图片",
+      "credit": "Bundled vector placeholder",
+      "fit": "cover",
+      "position": "center",
+      "source_page": "local-example",
+      "retrieved_at": "2026-07-12T00:00:00Z",
+      "sha256": "example-only",
+      "license_status": "generated_placeholder",
+      "license_notes": "Replace before client delivery.",
+      "review": "example_only"
+    },
+    "scene-b": {
+      "path": "example-scene-b.svg",
+      "title": "场景 B",
+      "alt": "深色背景中的展台与几何构图",
+      "caption": "示例素材 · 请替换为已审核项目图片",
+      "credit": "Bundled vector placeholder",
+      "fit": "cover",
+      "position": "center",
+      "source_page": "local-example",
+      "retrieved_at": "2026-07-12T00:00:00Z",
+      "sha256": "example-only",
+      "license_status": "generated_placeholder",
+      "license_notes": "Replace before client delivery.",
+      "review": "example_only"
+    }
+  },
+  "pages": [
+    {
+      "type": "cover_split",
+      "theme": "dark",
+      "section": "cover",
+      "eyebrow": "CURATORIAL PROPOSAL · 2026",
+      "title": "现代生活的\n两种尺度",
+      "subtitle": "从物件进入人与空间的关系",
+      "body": "这是一份结构和视觉语言示例。实际项目应从客户文案重新推导页面次序。",
+      "images": ["scene-a", "scene-b"]
+    },
+    {
+      "type": "statement_centered",
+      "theme": "light",
+      "section": "statement",
+      "eyebrow": "CURATORIAL STATEMENT · 策展命题",
+      "title": "展览不是把物件排在一起，而是组织观众理解它们的方式。",
+      "body": "从材料、身体和日常场景出发，每一个展陈判断都服务于同一个问题：设计如何悄然改变人的生活尺度。"
+    },
+    {
+      "type": "chapter_opener",
+      "theme": "oxblood",
+      "section": "chapter 01",
+      "eyebrow": "PART I · RELATIONSHIPS",
+      "title": "先建立关系，再展开物件。",
+      "body": "章节页给叙事留出呼吸，也让后续图片获得更清晰的语境。"
+    },
+    {
+      "type": "image_text_spread",
+      "theme": "light",
+      "section": "case study",
+      "eyebrow": "OBJECT 01 · CASE STUDY",
+      "title": "身体是理解尺度的起点",
+      "body": "物件并不孤立存在。触感、坐姿、视线和移动共同决定了观众如何阅读它。",
+      "image": "scene-a",
+      "image_side": "right",
+      "facts": [
+        {"label": "线索", "value": "身体 / 触感 / 尺度"},
+        {"label": "媒介", "value": "实物、图片与简短说明"},
+        {"label": "状态", "value": "概念方案"}
+      ]
+    },
+    {
+      "type": "compare",
+      "theme": "dark",
+      "section": "comparison",
+      "eyebrow": "TWO PERSPECTIVES · 两条线索",
+      "title": "同一主题的两个入口",
+      "body": "并置不是为了得出胜负，而是让差异成为理解主题的工具。",
+      "columns": [
+        {"title": "材料与手工", "body": "从纹理、连接和时间痕迹进入设计。"},
+        {"title": "系统与制造", "body": "从结构、复制和传播方式进入设计。"}
+      ]
+    },
+    {
+      "type": "card_grid",
+      "theme": "light",
+      "section": "zones",
+      "eyebrow": "EXHIBITION ZONES · 展区结构",
+      "title": "四种进入展览的方式",
+      "cards": [
+        {"number": "01", "title": "材料", "body": "让材料选择成为可见的设计立场。"},
+        {"number": "02", "title": "身体", "body": "通过尺度与动作解释使用关系。"},
+        {"number": "03", "title": "制造", "body": "把结构和生产过程转化为内容。"},
+        {"number": "04", "title": "日常", "body": "最终回到生活场景与人的经验。"}
+      ]
+    },
+    {
+      "type": "timeline",
+      "theme": "light",
+      "section": "roadmap",
+      "eyebrow": "PRODUCTION ROADMAP · 执行节奏",
+      "title": "从提资到客户稿",
+      "items": [
+        {"kicker": "01 · INPUT", "title": "整理输入", "body": "确认文案、图片、用途和时间。"},
+        {"kicker": "02 · STORY", "title": "建立叙事", "body": "提炼页面主张和内容次序。"},
+        {"kicker": "03 · LAYOUT", "title": "匹配组件", "body": "选择图文关系并生成初稿。"},
+        {"kicker": "04 · QA", "title": "检查交付", "body": "修正溢出、字体、裁切与来源。"}
+      ]
+    },
+    {
+      "type": "asset_manifest",
+      "theme": "light",
+      "section": "asset review",
+      "eyebrow": "ASSET STATUS · 素材审核",
+      "title": "每张图都带着来源进入版式",
+      "assets": ["scene-a", "scene-b"],
+      "body": "示例占位图必须在正式交付前替换；真实素材需要记录来源、校验值与使用边界。"
+    },
+    {
+      "type": "closing_quote",
+      "theme": "dark",
+      "section": "epilogue",
+      "eyebrow": "EPILOGUE · 结语",
+      "title": "让观众看见物件，也看见物件背后的生活方法。",
+      "body": "CURATORIAL STORYBOOK"
+    }
+  ]
+}

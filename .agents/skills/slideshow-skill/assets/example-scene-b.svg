@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Dark editorial placeholder B</title>
+  <desc id="desc">Abstract exhibition plinths against an oxblood wall.</desc>
+  <rect width="1600" height="1000" fill="#221d19"/>
+  <rect x="0" y="0" width="710" height="1000" fill="#762b25"/>
+  <rect x="270" y="570" width="380" height="430" fill="#e4d9c7"/>
+  <rect x="880" y="690" width="440" height="310" fill="#b08b57"/>
+  <circle cx="1040" cy="320" r="175" fill="none" stroke="#e4d9c7" stroke-width="26"/>
+  <path d="M1110 495 L1260 690 M970 495 L875 690" stroke="#e4d9c7" stroke-width="26" stroke-linecap="round"/>
+</svg>
