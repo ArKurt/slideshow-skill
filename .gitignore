@@ -4,6 +4,10 @@ __pycache__/
 .tmp/
 inputs/
 outputs/
+downloads/
+installers/
+*.exe
+*.msi
 
 .DS_Store
 Thumbs.db
