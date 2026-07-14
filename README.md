@@ -87,6 +87,24 @@ deck.pdf         供客户查看和交付的 PDF
 
 `outputs/` 同样不进入 Git。
 
+## 在 Open Design 中使用
+
+这个 skill 已包含 Open Design 的插件元数据。把仓库克隆到笔记本后，可以在 Open Design 的本地插件管理中选择：
+
+```text
+.agents/skills/slideshow-skill
+```
+
+安装后新建项目、选择“策展故事书演示文稿”，然后直接粘贴文案、上传素材，或告诉 agent 文件路径。无需把资料搬进固定的 `inputs/` 文件夹。生成结果仍以 `brief.json`、`deck.html` 和 `deck.pdf` 为一组：HTML 可在 OD 中预览和继续编辑，PDF 由 skill 自带渲染器导出。
+
+OD 顶部页码会通过 `od:slide` 协议与演示稿同步；把 `deck.html` 单独下载到浏览器中时，底部按钮、方向键、空格键和网址页码也可以独立工作。
+
+目前 web-only 模式需要注意：
+
+- 如果项目里已经有 `deck.pdf`，直接下载该文件查看，不要再用顶部“PDF 导出”触发 Firefox/系统打印；浏览器打印只是兜底，版面一致性较差。
+- OD 的 PDF 文件页目前可能显示抽取后的纯文字，这不是 PDF 本身损坏；下载后用系统 PDF 阅读器检查实际页面。
+- 注释与常规编辑可用；“标记”和“截图”在没有桌面合成器的 web-only 环境中可能失败，不影响 deck 与 renderer PDF 的生成。
+
 ## 风格如何决定
 
 - **没有提供新的视觉参考**：自动使用当前默认的暖色编辑风格，不需要每次重新发送“虎丘”案例；
@@ -174,6 +192,7 @@ python .agents/skills/slideshow-skill/scripts/render_deck.py \
 ```text
 .agents/skills/slideshow-skill/
 ├── SKILL.md
+├── open-design.json
 ├── agents/openai.yaml
 ├── scripts/render_deck.py
 ├── references/brief-schema.md

@@ -1,0 +1,104 @@
+{
+  "$schema": "https://open-design.ai/schemas/plugin.v1.json",
+  "specVersion": "1.0.0",
+  "name": "slideshow-skill",
+  "title": "Curatorial Slideshow Storybook",
+  "title_i18n": {
+    "en": "Curatorial Slideshow Storybook",
+    "zh-CN": "策展故事书演示文稿"
+  },
+  "version": "0.2.0",
+  "description": "Generate a warm-editorial curatorial deck as editable HTML and a review-ready PDF from copy, local images, and provenance records.",
+  "description_i18n": {
+    "en": "Generate a warm-editorial curatorial deck as editable HTML and a review-ready PDF from copy, local images, and provenance records.",
+    "zh-CN": "根据文案、本地图片和溯源记录，生成可编辑 HTML 与可审阅 PDF 的暖色编辑风格策展演示文稿。"
+  },
+  "homepage": "https://github.com/ArKurt/slideshow-skill",
+  "tags": [
+    "create",
+    "deck",
+    "editorial",
+    "curatorial",
+    "presentation",
+    "pdf"
+  ],
+  "compat": {
+    "agentSkills": [
+      {
+        "path": "./SKILL.md"
+      }
+    ]
+  },
+  "od": {
+    "kind": "skill",
+    "taskKind": "new-generation",
+    "mode": "deck",
+    "scenario": "design",
+    "surface": "web",
+    "preview": {
+      "type": "html",
+      "entry": "./deck.html"
+    },
+    "useCase": {
+      "query": {
+        "en": "Build a curatorial storybook deck from the copy and image assets I paste, upload, or name. Use the bundled warm-editorial style unless I provide another direction.",
+        "zh-CN": "根据我粘贴、上传或指定路径的文案和图片制作策展故事书演示文稿；若没有新的风格要求，使用内置暖色编辑风格。"
+      }
+    },
+    "context": {
+      "skills": [
+        {
+          "path": "./SKILL.md"
+        }
+      ],
+      "assets": [
+        "./scripts/render_deck.py",
+        "./references/brief-schema.md",
+        "./assets/example-brief.json",
+        "./assets/example-scene-a.svg",
+        "./assets/example-scene-b.svg"
+      ]
+    },
+    "pipeline": {
+      "stages": [
+        {
+          "id": "generate",
+          "atoms": [
+            "file-write",
+            "live-artifact"
+          ]
+        },
+        {
+          "id": "critique",
+          "atoms": [
+            "critique-theater"
+          ],
+          "repeat": true,
+          "until": "critique.score>=4 || iterations>=2"
+        }
+      ]
+    },
+    "inputs": [
+      {
+        "name": "brief",
+        "type": "string",
+        "required": false,
+        "label": "Project brief or source paths",
+        "placeholder": "Paste copy or list files and folders to use"
+      },
+      {
+        "name": "styleDirection",
+        "type": "string",
+        "required": false,
+        "label": "Style direction",
+        "placeholder": "Optional; the bundled warm-editorial style is the default"
+      }
+    ],
+    "capabilities": [
+      "prompt:inject",
+      "fs:read",
+      "fs:write",
+      "bash"
+    ]
+  }
+}

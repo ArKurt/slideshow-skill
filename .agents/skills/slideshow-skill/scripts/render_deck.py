@@ -360,7 +360,24 @@ body { color: var(--ink); font-family: var(--sans); }
 .timeline-grid { display: grid; gap: 7mm; margin-top: 16mm; grid-template-columns: repeat(4, 1fr); }.timeline-item { border-top: 1px solid var(--brass); padding-top: 6mm; }.timeline-kicker { margin-bottom: 5mm; color: var(--brass); font-size: 10px; letter-spacing: .18em; }
 .asset-table { width: 100%%; margin-top: 10mm; border-collapse: collapse; table-layout: fixed; font-size: 10px; }.asset-table th { color: var(--brass); font-size: 8px; letter-spacing: .16em; text-align: left; text-transform: uppercase; }.asset-table th, .asset-table td { padding: 3.5mm 2mm; border-bottom: 1px solid rgba(176,139,87,.35); vertical-align: top; overflow-wrap: anywhere; }.asset-table th:last-child, .asset-table td:last-child { width: 35%%; }
 .closing { height: 100%%; display: grid; align-content: center; justify-items: center; text-align: center; }.closing .title { max-width: 220mm; }.closing .copy { max-width: 145mm; }
-@media screen { .slide { margin: 12px auto; box-shadow: 0 10px 32px rgba(30,24,18,.12); } }
+.deck-nav { display: none; }
+.deck-hint { display: none; }
+@media screen {
+  html, body { width: 100%%; height: 100%%; overflow: hidden; }
+  .slide { display: none; position: absolute; inset: 0 auto auto 0; margin: 0; transform-origin: top left; box-shadow: 0 10px 32px rgba(30,24,18,.12); }
+  .slide.active { display: block; }
+  .deck-nav { position: fixed; z-index: 20; left: 50%%; bottom: 10px; display: grid; grid-template-columns: auto auto auto; align-items: stretch; transform: translateX(-50%%); color: #f1ecdf; background: #181512; border: 1px solid rgba(176,139,87,.55); font-family: var(--sans); }
+  .deck-nav button { min-width: 84px; padding: 12px 18px; color: inherit; background: transparent; border: 0; cursor: pointer; font: inherit; }
+  .deck-nav button:hover:not(:disabled) { background: var(--oxblood); }
+  .deck-nav button:disabled { opacity: .35; cursor: default; }
+  .deck-count { min-width: 92px; padding: 12px 18px; border-inline: 1px solid rgba(176,139,87,.4); text-align: center; font-variant-numeric: tabular-nums; letter-spacing: .18em; }
+  .deck-hint { position: fixed; right: 16px; bottom: 12px; z-index: 20; display: block; color: #756f65; font: 11px var(--sans); letter-spacing: .12em; }
+}
+@media print {
+  html, body { background: #fff; overflow: visible; }
+  .slide { display: block !important; position: relative; transform: none !important; box-shadow: none; }
+  .deck-nav, .deck-hint { display: none !important; }
+}
 """ % style
 
 
@@ -381,33 +398,177 @@ def render_html(
             + _text(page.get("section") or page["type"].replace("_", " "))
             + f"</span><span>{index:02d}</span></footer>"
         )
+        active = " active" if index == 1 else ""
+        label = page.get("section") or page["type"].replace("_", " ")
         slides.append(
-            f'<section class="slide {theme}" data-page="{index}"><div class="slide-content">'
+            f'<section class="slide {theme}{active}" data-page="{index}" '
+            f'data-screen-label="{index:02d} {_text(label)}" data-od-id="slide-{index:02d}">'
+            '<div class="slide-content">'
             + _render_component(page, assets, warnings)
             + "</div>"
             + footer
             + "</section>"
         )
     style = _style_values(brief)
+    language = str(meta.get("language", "zh-CN"))
+    is_chinese = language.lower().startswith("zh")
+    nav_text = {
+        "label": "演示文稿导航" if is_chinese else "Presentation navigation",
+        "previous": "上一页" if is_chinese else "Previous",
+        "previous_aria": "上一页" if is_chinese else "Previous slide",
+        "next": "下一页" if is_chinese else "Next",
+        "next_aria": "下一页" if is_chinese else "Next slide",
+        "hint": "← → · 空格" if is_chinese else "← → · Space",
+    }
     html = """<!doctype html>
 <html lang="%(language)s"><head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>%(title)s</title><style>%(css)s</style></head>
-<body data-overflow-pages=""><main class="deck">%(slides)s</main>
+<body data-overflow-pages=""><main class="deck" data-od-id="storybook-deck">%(slides)s</main>
+<nav class="deck-nav" aria-label="%(nav_label)s" data-od-id="deck-navigation">
+  <button type="button" id="deck-prev" aria-label="%(previous_aria)s">%(previous)s</button>
+  <span class="deck-count" aria-live="polite"><span id="deck-cur">01</span> / <span id="deck-total">%(page_count)02d</span></span>
+  <button type="button" id="deck-next" aria-label="%(next_aria)s">%(next)s</button>
+</nav>
+<div class="deck-hint" aria-hidden="true">%(hint)s</div>
 <script>
-addEventListener("load", () => {
-  const pages = [];
-  document.querySelectorAll(".slide-content").forEach((node, index) => {
-    if (node.scrollHeight > node.clientHeight + 2 || node.scrollWidth > node.clientWidth + 2) pages.push(index + 1);
+(function () {
+  const slides = Array.from(document.querySelectorAll(".slide"));
+  const previous = document.getElementById("deck-prev");
+  const next = document.getElementById("deck-next");
+  const current = document.getElementById("deck-cur");
+  const total = document.getElementById("deck-total");
+  const storeKey = "slideshow-skill:%(storage_key)s:page";
+  let index = 0;
+  let painting = false;
+
+  function pad(value) { return String(value).padStart(2, "0"); }
+
+  function readInitialIndex() {
+    const hashMatch = location.hash.match(/^#page-(\\d{1,3})$/);
+    if (hashMatch) return Number(hashMatch[1]) - 1;
+    try { return Number(localStorage.getItem(storeKey) || 0); } catch (_) { return 0; }
+  }
+
+  function fit() {
+    const page = slides[index];
+    if (!page || matchMedia("print").matches) return;
+    const pageWidth = page.offsetWidth;
+    const pageHeight = page.offsetHeight;
+    const scale = Math.min((innerWidth - 32) / pageWidth, (innerHeight - 88) / pageHeight);
+    const x = Math.max(16, (innerWidth - pageWidth * scale) / 2);
+    const y = Math.max(16, (innerHeight - 72 - pageHeight * scale) / 2);
+    slides.forEach((slide) => {
+      slide.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+    });
+  }
+
+  function updateChrome(updateLocation) {
+    current.textContent = pad(index + 1);
+    total.textContent = pad(slides.length);
+    previous.disabled = index === 0;
+    next.disabled = index === slides.length - 1;
+    if (updateLocation) {
+      try { localStorage.setItem(storeKey, String(index)); } catch (_) {}
+      history.replaceState(null, "", `#page-${pad(index + 1)}`);
+    }
+    fit();
+  }
+
+  function paint(updateLocation = true) {
+    painting = true;
+    slides.forEach((slide, slideIndex) => slide.classList.toggle("active", slideIndex === index));
+    painting = false;
+    updateChrome(updateLocation);
+  }
+
+  function go(target, updateLocation = true) {
+    index = Math.max(0, Math.min(slides.length - 1, Number(target) || 0));
+    paint(updateLocation);
+  }
+
+  function actionTarget(data) {
+    if (data.action === "go" && Number.isFinite(data.index)) return data.index;
+    if (data.action === "next") return index + 1;
+    if (data.action === "prev") return index - 1;
+    if (data.action === "first") return 0;
+    if (data.action === "last") return slides.length - 1;
+    return null;
+  }
+
+  function onKey(event) {
+    const target = event.target;
+    if (target && (target.matches("input, textarea, select") || target.isContentEditable)) return;
+    if (["ArrowRight", "PageDown", " "].includes(event.key)) {
+      event.preventDefault();
+      go(index + 1);
+    } else if (["ArrowLeft", "PageUp"].includes(event.key)) {
+      event.preventDefault();
+      go(index - 1);
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      go(0);
+    } else if (event.key === "End") {
+      event.preventDefault();
+      go(slides.length - 1);
+    }
+  }
+
+  function measureOverflow() {
+    const overflowPages = [];
+    slides.forEach((slide, slideIndex) => {
+      const wasActive = slide.classList.contains("active");
+      slide.classList.add("active");
+      const content = slide.querySelector(".slide-content");
+      if (content && (content.scrollHeight > content.clientHeight + 2 || content.scrollWidth > content.clientWidth + 2)) overflowPages.push(slideIndex + 1);
+      if (!wasActive) slide.classList.remove("active");
+    });
+    document.body.dataset.overflowPages = overflowPages.join(",");
+  }
+
+  previous.addEventListener("click", () => go(index - 1));
+  next.addEventListener("click", () => go(index + 1));
+  window.addEventListener("keydown", onKey, true);
+  window.addEventListener("resize", fit);
+  window.addEventListener("hashchange", () => {
+    const match = location.hash.match(/^#page-(\\d{1,3})$/);
+    if (match) go(Number(match[1]) - 1, false);
   });
-  document.body.dataset.overflowPages = pages.join(",");
-});
+  window.addEventListener("message", (event) => {
+    const data = event && event.data;
+    if (!data || data.type !== "od:slide") return;
+    const target = actionTarget(data);
+    if (target !== null) go(target);
+  });
+
+  const observer = new MutationObserver(() => {
+    if (painting) return;
+    const active = slides.findIndex((slide) => slide.classList.contains("active") || slide.classList.contains("is-active") || slide.classList.contains("current"));
+    if (active >= 0 && active !== index) {
+      index = active;
+      updateChrome(true);
+    }
+  });
+  slides.forEach((slide) => observer.observe(slide, { attributes: true, attributeFilter: ["class"] }));
+
+  index = Math.max(0, Math.min(slides.length - 1, readInitialIndex()));
+  paint();
+  measureOverflow();
+})();
 </script></body></html>
 """ % {
-        "language": _text(meta.get("language", "zh-CN")),
+        "language": _text(language),
         "title": _text(meta["title"]),
         "css": _css(style),
         "slides": "".join(slides),
+        "page_count": len(slides),
+        "storage_key": re.sub(r"[^a-z0-9]+", "-", str(meta["title"]).lower()).strip("-") or "deck",
+        "nav_label": _text(nav_text["label"]),
+        "previous": _text(nav_text["previous"]),
+        "previous_aria": _text(nav_text["previous_aria"]),
+        "next": _text(nav_text["next"]),
+        "next_aria": _text(nav_text["next_aria"]),
+        "hint": _text(nav_text["hint"]),
     }
     return html, warnings
 

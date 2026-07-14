@@ -20,14 +20,20 @@ Create a content-led deck from a reusable component system. Treat a reference PD
    python scripts/render_deck.py path/to/brief.json --output path/to/deck.html
    ```
 
+   The rendered HTML already includes standalone buttons, keyboard navigation, page hashes, and the Open Design `od:slide` message protocol. Keep this reusable framework and the `deck-cur` counter id instead of replacing them with a one-off navigation layer.
+
 7. When Chrome, Chromium, or Edge is available, export PDF and run overflow preflight:
 
    ```bash
    python scripts/render_deck.py path/to/brief.json --output path/to/deck.html --pdf path/to/deck.pdf --preflight
    ```
 
+   In Open Design, prefer this generated `deck.pdf` over the web toolbar's browser-print fallback. The PDF file tab may show extracted text; download or open the actual file to judge the rendered pages.
+
 8. Render the PDF to page images or inspect representative screenshots. Perform at least one inspect/fix/re-render cycle. Fix text overflow, font substitution, low-resolution images, awkward crops, inconsistent spacing, and missing credits before delivery.
 9. Deliver the PDF for review together with the structured brief and linked/approved source assets when editability matters. Keep client-private files and raw assets out of Git.
+
+When revising a manually refined Open Design deck, patch the named pages or create a new version. Do not regenerate the entire deck in place unless the user explicitly asks for it.
 
 Guide nontechnical users through the workflow in plain language. Summarize what was received, infer safe defaults, and ask only for information whose absence would materially change the result. Do not require the user to understand JSON, HTML, command lines, or folder conventions. At the end, report the generated file paths and suggest the most useful pages or issues to review first.
 

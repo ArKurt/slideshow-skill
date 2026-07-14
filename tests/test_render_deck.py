@@ -28,6 +28,23 @@ class RenderDeckTest(unittest.TestCase):
         self.assertIn("现代生活的两种尺度", html)
         self.assertIn("data:image/svg+xml;base64,", html)
         self.assertEqual(html.count('class="slide '), 9)
+        self.assertEqual(html.count('data-screen-label="'), 9)
+        self.assertEqual(html.count('data-od-id="slide-'), 9)
+
+    def test_html_has_standalone_and_open_design_navigation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "example.html"
+            render_deck.build(EXAMPLE_BRIEF, output)
+            html = output.read_text(encoding="utf-8")
+
+        self.assertIn('id="deck-cur"', html)
+        self.assertNotIn('id="deck-current"', html)
+        self.assertIn('data.type !== "od:slide"', html)
+        self.assertIn('data.action === "go"', html)
+        self.assertIn("MutationObserver", html)
+        self.assertIn("@media print", html)
+        self.assertIn(".slide.active", html)
+        self.assertIn("上一页", html)
 
     def test_unknown_component_is_rejected(self) -> None:
         brief = json.loads(EXAMPLE_BRIEF.read_text(encoding="utf-8"))
